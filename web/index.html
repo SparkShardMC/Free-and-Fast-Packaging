@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free-and-Fast-Packaging | Fast, Easy, Free</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Free-and-Fast-Packaging</h1>
+            <p>The Best .jar packaging. Easy, it creates the layout for you, you just code, we package. No gradle no complicated stuff no requried
+                                                  file layouts. Just Pure Awesomeness.</p>
+        </header>
+
+        <div class="button-container">
+            <button id="win-btn" class="btn" onclick="downloadLatest('Windows')">
+                <span class="icon">⊞</span> Download for Windows (.exe)
+            </button>
+            <button id="mac-btn" class="btn" onclick="downloadLatest('Mac')">
+                <span class="icon">⌘</span> Download for Mac (.dmg)
+            </button>
+            <button id="linux-btn" class="btn" onclick="downloadLatest('Linux')">
+                <span class="icon">⮝</span> Download for Linux
+            </button>
+        </div>
+
+        <div id="status-box" class="status">
+            Checking for latest build...
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

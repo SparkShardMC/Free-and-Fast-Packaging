@@ -1,41 +1,26 @@
-name: Packaging for App
+name: Turbo Build
 on:
   push:
-    branches: [ "main" ] # Runs every time you save code
-
-permissions:
-  contents: write
+    branches: [ main ]
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-        include:
-          - os: windows-latest
-            artifact_name: FreeFast_Windows.exe
-          - os: ubuntu-latest
-            artifact_name: FreeFast_Linux
-          - os: macos-latest
-            artifact_name: FreeFast_Mac.app
-
+    runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+      
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: '1.21'
 
-      - name: Build
+      - name: Build Windows App
         run: |
           go mod tidy
-          go build -o ${{ matrix.artifact_name }} main.go scanner.go packager.go ui.go
+          go build -o FreeFast_Win.exe .
 
-      - name: Upload to Release
-        uses: softprops/action-gh-release@v1
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
         with:
-          tag_name: latest
-          files: ${{ matrix.artifact_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: Windows-Build
+          path: FreeFast_Win.exe

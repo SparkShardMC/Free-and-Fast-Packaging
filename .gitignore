@@ -1,0 +1,46 @@
+# --- JAVA & MODDING JUNK ---
+*.class
+*.log
+*.pyc
+*.swp
+.gradle/
+build/
+bin/
+out/
+run/
+.DS_Store
+replay_recordings/
+dumps/
+
+# --- THE "GRADLE GHOSTS" (Kill these!) ---
+gradlew
+gradlew.bat
+gradle/
+.gradle-home/
+unpick-definitions/
+
+# --- IDE & EDITOR CONFUSION ---
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.settings/
+.classpath
+
+# --- COMPILER OUTPUTS ---
+# We don't want the .exe inside the source code repo
+dist/
+target/
+*.exe
+*.dmg
+*.app
+*.deb
+*.rpm
+Free-and-Fast-Packaging
+
+# --- SECRETS (Safety first) ---
+*.jks
+*.keystore
+local.properties

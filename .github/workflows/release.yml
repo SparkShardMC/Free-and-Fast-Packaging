@@ -1,0 +1,42 @@
+name: Build and Release Free-and-Fast-Packaging
+
+on:
+  push:
+    tags:
+      - 'v*' # Triggers when you push a version tag like v1.0.0
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        include:
+          - os: windows-latest
+            artifact_name: Free-and-Fast-Packaging.exe
+            asset_name: Free-and-Fast-Packaging-Windows.exe
+          - os: ubuntu-latest
+            artifact_name: Free-and-Fast-Packaging
+            asset_name: Free-and-Fast-Packaging-Linux
+          - os: macos-latest
+            artifact_name: Free-and-Fast-Packaging
+            asset_name: Free-and-Fast-Packaging-Mac.dmg
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Build Binary
+        run: go build -o ${{ matrix.artifact_name }} main.go scanner.go packager.go
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ matrix.artifact_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

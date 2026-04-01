@@ -1,0 +1,21 @@
+# Free-and-Fast-Packaging Config
+project:
+  name: "Natural_Disaster_Survival"
+  version: "1.0.0"
+  author: "SparkShard"
+
+environment:
+  minecraft: "1.21.11"
+  loader: "fabric"
+
+# The App will automatically look for these dependencies 
+# so you don't have to download them manually.
+dependencies:
+  - fabric-api: "latest"
+  - geckolib: "latest"
+
+# Any file in these folders will be IGNORED by the app
+exclude:
+  - ".gradle"
+  - "build"
+  - ".vscode"

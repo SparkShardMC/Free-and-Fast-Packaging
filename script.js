@@ -1,13 +1,16 @@
-// --- Free-and-Fast-Packaging Official Logic ---
+// --- Free-and-Fast-Packaging Turbo Logic ---
 const REPO = "SparkShardMC/Free-and-Fast-Packaging";
 
 async function downloadLatest(osType) {
     const statusBox = document.getElementById('status-box');
+    if (!statusBox) return; // Safety check
+
     statusBox.style.display = "inline-block";
-    statusBox.innerText = `Preparing ${osType} download...`;
+    statusBox.style.color = "#39ff14"; // Neon Green
+    statusBox.innerText = `⚡ Requesting ${osType} build from Cloud Engine...`;
 
     try {
-        // Fetch the latest release data from GitHub API
+        // 1. Fetch the latest release data
         const response = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`);
         
         if (!response.ok) {
@@ -16,58 +19,57 @@ async function downloadLatest(osType) {
 
         const data = await response.json();
         
-        // Match the asset name based on the release.yml naming convention
-        // (Windows.exe, Mac.dmg, or Linux)
+        // 2. Flexible Asset Matching
+        // Looks for "Win", "Mac", or "Linux" regardless of casing or file extension
         const asset = data.assets.find(a => 
-            a.name.toLowerCase().includes(osType.toLowerCase())
+            a.name.toLowerCase().includes(osType.toLowerCase().substring(0, 3))
         );
 
         if (asset) {
-            statusBox.innerText = "Connection successful. Starting download...";
-            // Trigger the native browser "Save As" interface
-            window.location.href = asset.browser_download_url;
+            statusBox.innerText = "🚀 Connection verified! Downloading...";
             
-            // Hide status after a few seconds
+            // Trigger download
+            const link = document.createElement('a');
+            link.href = asset.browser_download_url;
+            link.download = asset.name;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
             setTimeout(() => {
                 statusBox.style.display = "none";
             }, 5000);
         } else {
-            statusBox.innerText = `Error: Build for ${osType} is still compiling. Check back in 1 minute.`;
-            statusBox.style.color = "#ff4444";
+            // This triggers if the GitHub Action is still spinning
+            statusBox.innerText = `⚙️ Cloud Engine is still packaging ${osType}. Refresh in 30s.`;
+            statusBox.style.color = "#00ffff"; // Cyan for "Processing"
         }
     } catch (error) {
         console.error(error);
-        statusBox.innerText = "Update Server Offline: Please check GitHub Releases manually.";
+        statusBox.innerText = "⚠️ Server Busy: Try again or check GitHub Releases.";
         statusBox.style.color = "#ff4444";
     }
 }
 
-// --- Auto-Detection & Recommendation System ---
+// --- Auto-Detection System ---
 window.addEventListener('load', () => {
     const platform = navigator.userAgent.toLowerCase();
-    const winBtn = document.getElementById('win-btn');
-    const macBtn = document.getElementById('mac-btn');
-    const linuxBtn = document.getElementById('linux-btn');
+    const btns = {
+        win: document.getElementById('win-btn'),
+        mac: document.getElementById('mac-btn'),
+        linux: document.getElementById('linux-btn')
+    };
     
-    let detectedBtn = null;
+    let key = "";
+    if (platform.includes("win")) key = "win";
+    else if (platform.includes("mac")) key = "mac";
+    else if (platform.includes("linux")) key = "linux";
 
-    // Detect OS and assign the 'recommended' class for the CSS neon pulse
-    if (platform.includes("win")) {
-        detectedBtn = winBtn;
-    } else if (platform.includes("mac")) {
-        detectedBtn = macBtn;
-    } else if (platform.includes("linux")) {
-        detectedBtn = linuxBtn;
-    }
-
-    if (detectedBtn) {
-        detectedBtn.classList.add('recommended');
-        // Add a small "Recommended" badge text to the button
-        const badge = document.createElement('span');
-        badge.style.fontSize = "0.7rem";
-        badge.style.display = "block";
-        badge.style.color = "#39ff14";
-        badge.innerText = "MATCHED FOR YOUR OS";
-        detectedBtn.appendChild(badge);
+    if (key && btns[key]) {
+        btns[key].classList.add('recommended');
+        const badge = document.createElement('div');
+        badge.style.cssText = "font-size: 0.65rem; color: #39ff14; margin-top: 5px; letter-spacing: 1px; font-weight: bold;";
+        badge.innerText = "BEST FOR YOUR SYSTEM";
+        btns[key].appendChild(badge);
     }
 });
